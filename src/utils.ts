@@ -33,7 +33,9 @@ export function tryPaths(paths: string[]) {
 
 export function getVerdaccioHome(): string {
   const userDataDir =
-    process.env.XDG_DATA_HOME || path.join(homedir(), '.config')
+    process.platform === 'win32'
+      ? (process.env.APPDATA || path.join(homedir(), "AppData/Roaming"))
+      : path.join(homedir(), '.config')
   return path.join(userDataDir, 'verdaccio')
 }
 
@@ -53,7 +55,11 @@ export function getVerdaccioStoragePath() {
   } else {
     const config = getVerdaccioConfig()
     if (config) {
-      return path.join(getVerdaccioHome(), config.storage)
+      if (path.isAbsolute(config.storage)) {
+        return config.storage
+      } else {
+        return path.join(getVerdaccioHome(), config.storage)
+      }
     }
   }
 }
