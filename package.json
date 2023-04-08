@@ -1,0 +1,39 @@
+{
+  "name": "verdaccio-pack",
+  "version": "1.0.0",
+  "description": "一个用于将本地verdaccio storage打包成zip压缩文件的命令行工具",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx ./src/cli.ts clear",
+    "clean": "rimraf dist",
+    "format": "prettier --write ."
+  },
+  "bin": {
+    "verdaccio-pack": "./bin/verdaccio-pack.js"
+  },
+  "files": [
+    "bin",
+    "dist"
+  ],
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "archiver": "^5.3.1",
+    "chalk": "^5.2.0",
+    "commander": "^10.0.0",
+    "execa": "^7.1.1",
+    "rimraf": "^4.4.1",
+    "yaml": "^2.2.1",
+    "zip-a-folder": "^1.1.5"
+  },
+  "devDependencies": {
+    "@types/archiver": "^5.3.2",
+    "@types/node": "^18.15.11",
+    "prettier": "^2.8.7",
+    "tsx": "^3.12.6",
+    "typescript": "^5.0.3"
+  }
+}
