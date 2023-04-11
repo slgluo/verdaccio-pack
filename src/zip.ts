@@ -4,6 +4,9 @@ import * as path from 'path'
 import archiver from 'archiver'
 import * as fs from 'fs'
 
+// fork from git+https://github.com/maugenst/zip-a-folder.git
+// author: Marius Augenstein
+
 export enum COMPRESSION_LEVEL {
   uncompressed = 0,
   medium = 5,
