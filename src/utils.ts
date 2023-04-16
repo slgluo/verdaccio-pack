@@ -58,6 +58,6 @@ export function getVerdaccioStoragePath() {
 }
 
 export async function getPnpmStorePath() {
-  const { stdout } = await $`aaa store path`
+  const { stdout } = await $`pnpm store path`
   return stdout
 }

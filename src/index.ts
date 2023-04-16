@@ -11,18 +11,18 @@ export default async () => {
     .name(Reflect.ownKeys(pkg.bin)[0] as string)
     .description(pkg.description)
     .usage('<command> [options]')
-    .version(pkg.version, '-v, --version', '显示cli当前版本')
-    .addHelpCommand('help [command]', '显示命令帮助信息')
-    .helpOption('-h, --help', '显示命令帮助信息')
+    .version(pkg.version, '-v, --version', 'display current version of the cli')
+    .addHelpCommand('help [command]', 'display help for command')
+    .helpOption('-h, --help', 'display help for command')
 
   program
     .command('clear')
-    .description('清除pnpm store目录和verdaccio storage目录')
+    .description('clean verdaccio local storage')
     .action(ClearCommand)
 
   program
     .command('pack')
-    .description('打包verdaccio storage成zip压缩文件')
+    .description('pack verdaccio local storage to a zip file')
     .action(PackCommand)
 
   program.parse(process.argv)
