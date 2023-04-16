@@ -18,6 +18,7 @@ export default async () => {
   program
     .command('clear')
     .description('clean verdaccio local storage')
+    .option('--pnpm-store', 'clean pnpm-store at the same time', false)
     .action(ClearCommand)
 
   program

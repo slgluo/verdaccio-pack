@@ -13,14 +13,15 @@ function rm(pathLike: string) {
   })
 }
 
-export default async function (params: any) {
-  console.log(params)
-  console.log(chalk.green('cleaning pnpm-store...'))
-  const storePath = await getPnpmStorePath()
-  if (storePath)
-    rm(storePath)
+export default async function (params: { pnpmStore: boolean }) {
+  if (params.pnpmStore) {
+    console.log(chalk.green('cleaning pnpm-store...'))
+    const storePath = await getPnpmStorePath()
+    if (storePath)
+      rm(storePath)
 
-  console.log(chalk.green('clean pnpm-store finished'))
+    console.log(chalk.green('clean pnpm-store finished'))
+  }
 
   console.log(chalk.green('cleaning verdaccio storage...'))
   const storagePath = getVerdaccioStoragePath()
