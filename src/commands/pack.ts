@@ -1,7 +1,8 @@
+import path from 'node:path'
+import chalk from 'chalk'
 import { getVerdaccioStoragePath } from '../utils.js'
 import { zip } from '../zip.js'
-import path from 'path'
-import chalk from 'chalk'
+
 export default async function ({ target }: { target?: string }) {
   const storagePath = getVerdaccioStoragePath()
 

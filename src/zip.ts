@@ -1,8 +1,8 @@
 'use strict'
-import { WriteStream } from 'fs'
-import * as path from 'path'
+import type { WriteStream } from 'node:fs'
+import * as path from 'node:path'
+import * as fs from 'node:fs'
 import archiver from 'archiver'
-import * as fs from 'fs'
 
 // fork from git+https://github.com/maugenst/zip-a-folder.git
 // author: Marius Augenstein
@@ -17,7 +17,7 @@ export enum COMPRESSION_LEVEL {
  * Options to pass in to zip a folder
  * compression default is 'high'
  */
-export type ZipAFolderOptions = {
+export interface ZipAFolderOptions {
   compression?: COMPRESSION_LEVEL
   customWriteStream?: WriteStream
   exclude?: string | string[] | RegExp | RegExp[]
@@ -34,7 +34,7 @@ export class ZipAFolder {
   static async tar(
     srcFolder: string,
     tarFilePath: string | undefined,
-    zipAFolderOptions?: ZipAFolderOptions
+    zipAFolderOptions?: ZipAFolderOptions,
   ): Promise<void | Error> {
     const o: ZipAFolderOptions = zipAFolderOptions || {
       compression: COMPRESSION_LEVEL.high,
@@ -47,7 +47,8 @@ export class ZipAFolder {
         format: 'tar',
         zipAFolderOptions,
       })
-    } else {
+    }
+    else {
       await ZipAFolder.compress({
         srcFolder,
         targetFilePath: tarFilePath,
@@ -73,7 +74,7 @@ export class ZipAFolder {
   static async zip(
     srcFolder: string,
     zipFilePath: string | undefined,
-    zipAFolderOptions?: ZipAFolderOptions
+    zipAFolderOptions?: ZipAFolderOptions,
   ): Promise<void | Error> {
     const o: ZipAFolderOptions = zipAFolderOptions || {
       compression: COMPRESSION_LEVEL.high,
@@ -89,7 +90,8 @@ export class ZipAFolder {
           store: true,
         },
       })
-    } else {
+    }
+    else {
       await ZipAFolder.compress({
         srcFolder,
         targetFilePath: zipFilePath,
@@ -122,42 +124,46 @@ export class ZipAFolder {
     if (!zipAFolderOptions?.customWriteStream && targetFilePath) {
       const targetBasePath: string = path.dirname(targetFilePath)
 
-      if (targetBasePath === srcFolder) {
+      if (targetBasePath === srcFolder)
         throw new Error('Source and target folder must be different.')
-      }
+
       try {
-        await fs.promises.access(srcFolder, fs.constants.R_OK) //eslint-disable-line no-bitwise
+        await fs.promises.access(srcFolder, fs.constants.R_OK)
         await fs.promises.access(
           targetBasePath,
-          fs.constants.R_OK | fs.constants.W_OK
-        ) //eslint-disable-line no-bitwise
-      } catch (e: any) {
+          fs.constants.R_OK | fs.constants.W_OK,
+        )
+      }
+      catch (e: any) {
         throw new Error(`Permission error: ${e.message}`)
       }
       output = fs.createWriteStream(targetFilePath)
-    } else if (zipAFolderOptions && zipAFolderOptions.customWriteStream) {
+    }
+    else if (zipAFolderOptions && zipAFolderOptions.customWriteStream) {
       output = zipAFolderOptions?.customWriteStream
-    } else {
+    }
+    else {
       throw new Error(
-        'You must either provide a target file path or a custom write stream to write to.'
+        'You must either provide a target file path or a custom write stream to write to.',
       )
     }
 
     const zipArchive: archiver.Archiver = archiver(
       format,
-      archiverOptions || {}
+      archiverOptions || {},
     )
 
     const exclude = zipAFolderOptions?.exclude
     let excludes: RegExp[] = []
     if (exclude) {
       if (Array.isArray(exclude)) {
-        excludes = exclude.map((e) =>
-          typeof e === 'string' ? new RegExp(e) : e
+        excludes = exclude.map(e =>
+          typeof e === 'string' ? new RegExp(e) : e,
         )
-      } else {
-        excludes =
-          typeof exclude === 'string' ? [new RegExp(exclude)] : [exclude]
+      }
+      else {
+        excludes
+          = typeof exclude === 'string' ? [new RegExp(exclude)] : [exclude]
       }
     }
 
@@ -171,7 +177,7 @@ export class ZipAFolder {
 
       zipArchive.pipe(output)
       zipArchive.directory(srcFolder, zipRootName, (entry) => {
-        const isExclude = excludes.some((e) => e.test(entry.name))
+        const isExclude = excludes.some(e => e.test(entry.name))
         return isExclude ? false : entry
       })
       zipArchive.finalize()

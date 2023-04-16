@@ -1,6 +1,6 @@
+import { createRequire } from 'node:module'
 import { Command } from 'commander'
 import { ClearCommand, PackCommand } from './commands/index.js'
-import { createRequire } from 'node:module'
 
 const require = createRequire(import.meta.url)
 const pkg = require('../package.json')
