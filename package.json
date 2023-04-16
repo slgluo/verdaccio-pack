@@ -1,7 +1,7 @@
 {
   "name": "verdaccio-pack",
   "type": "module",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "cli for compress verdaccio storage to a zip file",
   "author": "slgluo",
   "license": "ISC",
@@ -10,7 +10,9 @@
     "type": "git",
     "url": "https://github.com/slgluo/verdaccio-pack.git"
   },
-  "keywords": ["verdaccio"],
+  "keywords": [
+    "verdaccio"
+  ],
   "exports": "./dist/index.js",
   "bin": {
     "verdaccio-pack": "./bin/verdaccio-pack.js"
