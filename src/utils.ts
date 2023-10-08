@@ -1,11 +1,12 @@
 import { existsSync, readFileSync } from 'node:fs'
 import path, { join } from 'node:path'
 import process from 'node:process'
-import { homedir } from 'node:os'
 import { fileURLToPath } from 'node:url'
 import { createRequire } from 'node:module'
 import { parseDocument } from 'yaml'
 import { $ } from 'execa'
+import { findConfigFile } from '@verdaccio/config'
+import type { Config } from '@verdaccio/config'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -25,20 +26,14 @@ export function tryPath(path: string) {
 }
 
 export function getVerdaccioHome(): string {
-  const userDataDir
-    = process.platform === 'win32'
-      ? (process.env.APPDATA || path.join(homedir(), 'AppData/Roaming'))
-      : path.join(homedir(), '.config')
-  return path.join(userDataDir, 'verdaccio')
+  return path.dirname(findConfigFile())
 }
 
-export function getVerdaccioConfig() {
-  const configPath = tryPath(path.join(getVerdaccioHome(), 'config.yaml'))
-  if (configPath) {
-    const content = readFileSync(configPath, 'utf-8')
-    const doc = parseDocument(content)
-    return doc.toJS()
-  }
+export function getVerdaccioConfig(): Config {
+  const configPath = findConfigFile()
+  const content = readFileSync(configPath, 'utf-8')
+  const doc = parseDocument(content)
+  return doc.toJS()
 }
 
 export function getVerdaccioStoragePath() {
@@ -48,11 +43,11 @@ export function getVerdaccioStoragePath() {
   }
   else {
     const config = getVerdaccioConfig()
-    if (config) {
+    if (config.storage) {
       if (path.isAbsolute(config.storage))
         return config.storage
       else
-        return path.join(getVerdaccioHome(), config.storage)
+        return path.resolve(getVerdaccioHome(), config.storage)
     }
   }
 }
