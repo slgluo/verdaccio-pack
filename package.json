@@ -15,7 +15,7 @@
   ],
   "exports": "./dist/index.js",
   "bin": {
-    "verdaccio-pack": "./bin/verdaccio-pack.js"
+    "verda": "./bin/verdaccio-pack.js"
   },
   "files": [
     "bin",
