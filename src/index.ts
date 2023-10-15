@@ -6,6 +6,11 @@ const require = createRequire(import.meta.url)
 const pkg = require('../package.json')
 
 export default async () => {
+  // checkVerdaHome()
+  await registryCommand()
+}
+
+async function registryCommand() {
   const program = new Command()
   program
     .name(Reflect.ownKeys(pkg.bin)[0] as string)
@@ -27,3 +32,9 @@ export default async () => {
 
   program.parse(process.argv)
 }
+
+// function checkVerdaHome() {
+//   const verdaHome = path.join(os.homedir(), VERDA_HOME_DIR)
+//   if (!pathExistsSync(verdaHome))
+//     fs.mkdirSync(verdaHome)
+// }

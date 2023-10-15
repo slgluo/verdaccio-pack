@@ -3,10 +3,12 @@ import path, { join } from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 import { createRequire } from 'node:module'
+import * as os from 'node:os'
 import { parseDocument } from 'yaml'
 import { $ } from 'execa'
 import { findConfigFile } from '@verdaccio/config'
 import type { Config } from '@verdaccio/config'
+import { VERDA_HOME_DIR } from './const.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -55,4 +57,12 @@ export function getVerdaccioStoragePath() {
 export async function getPnpmStorePath() {
   const { stdout } = await $`pnpm store path`
   return stdout
+}
+
+export function getVerdaHome(): string {
+  return path.join(os.homedir(), VERDA_HOME_DIR)
+}
+
+export function getVerdaStoragePath(): string {
+  return path.join(getVerdaHome(), 'storage')
 }

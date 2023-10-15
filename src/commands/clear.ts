@@ -3,9 +3,9 @@ import * as path from 'node:path'
 import * as console from 'node:console'
 import { rimrafSync } from 'rimraf'
 import chalk from 'chalk'
-import inquirer from 'inquirer'
 import { $ } from 'execa'
 import { getPnpmStorePath, getVerdaccioStoragePath } from '../utils.js'
+import { packageManagerPrompt } from '../prompts/index.js'
 
 function rm(pathLike: string) {
   const paths = readdirSync(pathLike)
@@ -17,44 +17,27 @@ function rm(pathLike: string) {
 }
 
 export default async function () {
-  const result = await inquirer.prompt<{ packageManager: 'npm' | 'yarn' | 'pnpm' }>([
-    {
-      name: 'packageManager',
-      message: 'which package manager will you use?',
-      type: 'list',
-      default: 'npm',
-      choices: [
-        {
-          name: 'npm',
-          value: 'npm',
-        },
-        {
-          name: 'yarn',
-          value: 'yarn',
-        },
-        {
-          name: 'pnpm',
-          value: 'pnpm',
-        },
-      ],
-    },
-  ])
-
+  const result = await packageManagerPrompt()
   const { packageManager } = result
-  console.log('you select:', packageManager)
-  if (packageManager === 'npm') {
-    await $({ stdio: 'inherit' })`npm cache clean --force`
-  }
-  else if (packageManager === 'yarn') {
-    await $({ stdio: 'inherit' })`yarn cache clean`
-  }
-  else if (packageManager === 'pnpm') {
-    console.log(chalk.green('cleaning pnpm-store...'))
-    const storePath = await getPnpmStorePath()
-    if (storePath)
-      rm(storePath)
 
-    console.log(chalk.green('clean pnpm-store finished'))
+  try {
+    if (packageManager === 'npm') {
+      await $({ stdio: 'inherit' })`npm cache clean --force`
+    }
+    else if (packageManager === 'yarn') {
+      await $({ stdio: 'inherit' })`yarn cache clean`
+    }
+    else if (packageManager === 'pnpm') {
+      console.log(chalk.green('cleaning pnpm-store...'))
+      const storePath = await getPnpmStorePath()
+      if (storePath)
+        rm(storePath)
+
+      console.log(chalk.green('clean pnpm-store finished'))
+    }
+  }
+  catch (e) {
+    console.error(chalk.red(`${packageManager} clean cache failed`))
   }
 
   console.log(chalk.green('cleaning verdaccio storage...'))
