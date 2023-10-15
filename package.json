@@ -1,7 +1,7 @@
 {
   "name": "verdaccio-pack",
   "type": "module",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "cli for compress verdaccio storage to a zip file",
   "author": "slgluo",
   "license": "ISC",
